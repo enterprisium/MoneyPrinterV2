@@ -1,6 +1,6 @@
 {
   "verbose": true,
-  "firefox_profile": "/home/user/.mozilla/firefox/f9hhhw13.MP",
+  "firefox_profile": "/home/user/.mozilla/firefox/2fjwq01v.default-release",
   "headless": true,
   "twitter_language": "English",
   "llm": "google",
