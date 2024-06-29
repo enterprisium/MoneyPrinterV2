@@ -15,7 +15,8 @@ class TTS:
         Returns:
             None
         """
-        venv_site_packages = "venv\\Lib\\site-packages"
+        # Use os.path.join to construct the path
+        venv_site_packages = os.path.join("venv", "lib", "python3.10", "site-packages")
 
         # Path to the .models.json file
         models_json_path = os.path.join(
@@ -72,4 +73,3 @@ class TTS:
         self.synthesizer.save_wav(outputs, output_file)
 
         return output_file
-    
