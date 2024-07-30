@@ -1,34 +1,31 @@
 LLM = "Gemini" #  @param ["Gemini", "G4F"]
-
-
-
+import os
+import io
+import cv2
 import g4f 
-import requests
-import json 
 import time
+import json 
+import uuid
+import torch
+import random
+import requests
+import numpy as np
+from PIL import Image
+from TTS.api import TTS
 from pprint import pprint 
 import google.generativeai as genai
 from moviepy.editor import AudioFileClip, concatenate_audioclips, concatenate_videoclips, ImageClip
 
-import cv2
-import numpy as np
-import uuid
-from PIL import Image
-import requests
-import torch
-from TTS.api import TTS
-import io
-import requests
-from PIL import Image
-import random
+
+
 
 
 
 # API Keys (replace with your actual keys)
 # Use environment variables for security, fallback to hardcoded values if not set
-GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', 'AIzaSyC6N1MVe9WmAFjWMNuXjlaLnYa8eO813tY')
-SEGMIND_API_KEY = os.environ.get('SEGMIND_API_KEY', 'SG_2d3504ba72dbeacc')
-ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY', 'ec71cc5fb466bbbeaa935e5a7b001d25')
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', 'AIzaSyC6N1MVe9WmAFjWMNuXjlaLnYa8eO813t')
+SEGMIND_API_KEY = os.environ.get('SEGMIND_API_KEY', 'SG_2d3504ba72dbeac')
+ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY', 'ec71cc5fb466bbbeaa935e5a7b001d2')
 
 # Configure Gemini with the API key
 genai.configure(api_key=GOOGLE_API_KEY)
