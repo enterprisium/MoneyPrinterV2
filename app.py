@@ -1,4 +1,15 @@
+# choose from Gemini or G4F
 LLM = "Gemini" #  @param ["Gemini", "G4F"]
+# Choose from Segmind or Hercai
+VIDEO_SOURCE = "Hercai" #  @param ["Segmind",  "Hercai"]
+# Choose  from XTTS_V2 or Elevenlabs
+TTS_PROVIDER = "XTTS_V2" #  @param ["Elevenvlabs",  "XTTS_V2"]
+# two words like "en, hi, fr, are for XTTS_V2
+LANGUAGE = "en" # @param ["en", "English", "hi", "Hindi", "Chinese", "Spanish", "Portuguese", "French", "German", "Japanese", "Arabic", "Korean", "Italian", "Dutch", "Turkish", "Polish", "Russian", "Czech"]
+# single name voices are only for elevenlabs, all others are for XTTS_V2
+VOICE = "Baldur Sanjin" # @param ["Sarah", "Laura", "Charlie", "George", "Callum", "Liam", "Charlotte", "Alice", "Matilda", "Will", "Jessica", "Eric", "Chris", "Brian", "Daniel", "Lily", "Bill", "Claribel Dervla", "Daisy Studious", "Tammie Ema", "Alison Dietlinde", "Ana Florence", "Annmarie Nele", "Asya Anara", "Brenda Stern", "Gitta Nikolina", "Henriette Usha", "Sofia Hellen", "Tammy Grit", "Tanja Adelina", "Vjollca Johnnie", "Andrew Chipper", "Badr Odhiambo", "Dionisio Schuyler", "Royston Min", "Viktor Eka", "Abrahan Mack", "Adde Michal", "Baldur Sanjin", "Craig Gutsy", "Damien Black", "Gilberto Mathias", "Ilkin Urbano", "Kazuhiko Atallah", "Ludvig Milivoj", "Suad Qasim", "Torcull Diarmuid", "Viktor Menelaos", "Zacharie Aimilios", "Nova Hogarth", "Maja Ruoho", "Uta Obando", "Lidiya Szekeres", "Chandra MacFarland", "Szofi Granger", "Camilla Holmström", "Lilya Stainthorpe", "Zofija Kendrick", "Narelle Moon", "Barbora MacLean", "Alexandra Hisakawa", "Alma María", "Rosemary Okafor", "Ige Behringer", "Filip Traverse", "Damjan Chapman", "Wulf Carlevaro", "Aaron Dreschner", "Kumar Dahl", "Eugenio Mataracı", "Ferran Simen", "Xavier Hayasaka", "Luis Moray", "Marcos Rudaski"]
+
+
 import os
 import io
 import cv2
@@ -21,8 +32,7 @@ from moviepy.editor import AudioFileClip, concatenate_audioclips, concatenate_vi
 
 
 
-# API Keys (replace with your actual keys)
-# Use environment variables for security, fallback to hardcoded values if not set
+
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', 'AIzaSyC6N1MVe9WmAFjWMNuXjlaLnYa8eO813t')
 SEGMIND_API_KEY = os.environ.get('SEGMIND_API_KEY', 'SG_2d3504ba72dbeac')
 ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY', 'ec71cc5fb466bbbeaa935e5a7b001d2')
@@ -117,10 +127,6 @@ active_folder = str(current_uuid)
 print (active_folder)
 
 
-
-VIDEO_SOURCE = "Hercai" #  @param ["Segmind",  "Hercai"]
-
-
 def generate_images(prompts, output_folder):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -172,11 +178,6 @@ def generate_images(prompts, output_folder):
             time.sleep(1)
 
 generate_images(image_prompts, active_folder)
-
-
-TTS_PROVIDER = "XTTS_V2" #  @param ["Elevenvlabs",  "XTTS_V2"]
-LANGUAGE = "en" # @param ["en", "English", "Chinese", "Spanish", "Hindi", "Portuguese", "French", "German", "Japanese", "Arabic", "Korean", "Italian", "Dutch", "Turkish", "Polish", "Russian", "Czech"]
-VOICE = "Baldur Sanjin" # @param ["Sarah", "Laura", "Charlie", "George", "Callum", "Liam", "Charlotte", "Alice", "Matilda", "Will", "Jessica", "Eric", "Chris", "Brian", "Daniel", "Lily", "Bill", "Claribel Dervla", "Daisy Studious", "Tammie Ema", "Alison Dietlinde", "Ana Florence", "Annmarie Nele", "Asya Anara", "Brenda Stern", "Gitta Nikolina", "Henriette Usha", "Sofia Hellen", "Tammy Grit", "Tanja Adelina", "Vjollca Johnnie", "Andrew Chipper", "Badr Odhiambo", "Dionisio Schuyler", "Royston Min", "Viktor Eka", "Abrahan Mack", "Adde Michal", "Baldur Sanjin", "Craig Gutsy", "Damien Black", "Gilberto Mathias", "Ilkin Urbano", "Kazuhiko Atallah", "Ludvig Milivoj", "Suad Qasim", "Torcull Diarmuid", "Viktor Menelaos", "Zacharie Aimilios", "Nova Hogarth", "Maja Ruoho", "Uta Obando", "Lidiya Szekeres", "Chandra MacFarland", "Szofi Granger", "Camilla Holmström", "Lilya Stainthorpe", "Zofija Kendrick", "Narelle Moon", "Barbora MacLean", "Alexandra Hisakawa", "Alma María", "Rosemary Okafor", "Ige Behringer", "Filip Traverse", "Damjan Chapman", "Wulf Carlevaro", "Aaron Dreschner", "Kumar Dahl", "Eugenio Mataracı", "Ferran Simen", "Xavier Hayasaka", "Luis Moray", "Marcos Rudaski"]
 
 
 def generate_speech(texts, tts_provider="XTTS_V2", language="en", voice="Badr Odhiambo", foldername="output"):
