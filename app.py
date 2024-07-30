@@ -1,3 +1,15 @@
+!pip install --quiet g4f[all] --upgrade
+!pip install --quiet google-generativeai
+!pip install --quiet TTS
+!pip install --quiet ipyplot
+!pip install --quiet git+https://github.com/Zulko/moviepy.git@bc8d1a831d2d1f61abfdf1779e8df95d523947a5
+!pip install --quiet imageio==2.33
+!pip install --quiet numpy==1.23
+!apt install -qq imagemagick
+!cat /etc/ImageMagick-6/policy.xml | sed 's/none/read,write/g'> /etc/ImageMagick-6/policy.xml
+
+
+
 # choose from Gemini or G4F
 LLM = "Gemini" #  @param ["Gemini", "G4F"]
 # Choose from Segmind or Hercai
