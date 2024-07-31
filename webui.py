@@ -53,6 +53,9 @@ def fetch_imagedescription_and_script(prompt):
     return image_prompts, texts
 
 def generate_images(prompts, fname):
+    if not segmind_apikey:
+        raise ValueError("Segmind API key is missing. Please provide a valid API key.")
+    
     url = "https://api.segmind.com/v1/sdxl1.0-txt2img"
     headers = {'x-api-key': segmind_apikey}
 
@@ -94,6 +97,9 @@ def generate_images(prompts, fname):
             print(f"Error: Failed to retrieve or save image {i + 1}")
 
 def generate_and_save_audio(text, foldername, filename, voice_id, model_id="eleven_multilingual_v2", stability=0.4, similarity_boost=0.80):
+    if not elevenlabs_apikey:
+        raise ValueError("ElevenLabs API key is missing. Please provide a valid API key.")
+    
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
     headers = {
         "Accept": "audio/mpeg",
@@ -126,23 +132,29 @@ def create_combined_video_audio(mp3_folder, output_filename, output_resolution=(
     video_clips = []
 
     for mp3_file in mp3_files:
-        audio_clip = AudioFileClip(os.path.join(mp3_folder, mp3_file))
-        audio_clips.append(audio_clip)
+        audio_clip_path = os.path.join(mp3_folder, mp3_file)
+        if os.path.exists(audio_clip_path):
+            audio_clip = AudioFileClip(audio_clip_path)
+            audio_clips.append(audio_clip)
+        else:
+            print(f"Warning: Audio file {audio_clip_path} does not exist.")
 
         img_path = os.path.join(mp3_folder, f"{mp3_file.split('.')[0]}.jpg")
-        image = cv2.imread(img_path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        if os.path.exists(img_path):
+            image = cv2.imread(img_path)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image_resized = cv2.resize(image, (output_resolution[0], output_resolution[0]))
+            blurred_img = cv2.GaussianBlur(image, (0, 0), 30)
+            blurred_img = cv2.resize(blurred_img, output_resolution)
+            y_offset = (output_resolution[1] - output_resolution[0]) // 2
+            blurred_img[y_offset:y_offset+output_resolution[0], :] = image_resized
+            video_clip = ImageClip(np.array(blurred_img), duration=audio_clip.duration)
+            video_clips.append(video_clip)
+        else:
+            print(f"Warning: Image file {img_path} does not exist.")
 
-        image_resized = cv2.resize(image, (output_resolution[0], output_resolution[0]))
-
-        blurred_img = cv2.GaussianBlur(image, (0, 0), 30)
-        blurred_img = cv2.resize(blurred_img, output_resolution)
-
-        y_offset = (output_resolution[1] - output_resolution[0]) // 2
-        blurred_img[y_offset:y_offset+output_resolution[0], :] = image_resized
-
-        video_clip = ImageClip(np.array(blurred_img), duration=audio_clip.duration)
-        video_clips.append(video_clip)
+    if not audio_clips:
+        raise ValueError("No audio clips found. Ensure that audio files are generated correctly.")
 
     final_audio = concatenate_audioclips(audio_clips)
     final_video = concatenate_videoclips(video_clips, method="compose")
@@ -234,7 +246,7 @@ Please follow these instructions to create an engaging and impactful video:
     return output_video_file
 
 def add_captions(inputvideo, font_color, font_size, font_name, text_position):
-    if inputvideo is None:
+    if inputvideo is None or not os.path.exists(inputvideo):
         raise gr.Error("Please generate a video first before adding captions.")
     audiofilename = extract_audio_from_video(inputvideo)
     wordlevelinfo = get_word_level_timestamps(model, audiofilename)
@@ -298,6 +310,12 @@ with gr.Blocks(theme=gr.themes.Base()) as demo:
         fn=add_captions,
         inputs=[video, font_color, font_size, font_name, text_position],
         outputs=[final_video]
+    )
+
+    save_keys_btn.click(
+        fn=save_api_keys,
+        inputs=[segmind_key_input, elevenlabs_key_input],
+        outputs=[api_status]
     )
 
 demo.launch(debug=True, enable_queue=True)
